@@ -1,8 +1,16 @@
 ## Improvements
 
-- Security - maybe the front-end could have some sort of password/key that only then the back-end would trust it
-- failure/reconnection logic - re-connect mechanism in case connection gets lost between client and server
-- event structure - if we stick with json or something else, we shuold also standardize event types and structure
-- scalability - maybe we need multiple processes of the back-end and a middleman (like redis) to orchestrate everything
-- observability - some sort of platform/dashboard where we can see connections made and check if they're healthy/stuck
-- extract websocket logic on front-end - so multiple react components could reuse logic for websocket listening and message sending
+- Security
+  - Have the front-end include some secret (key, password) in the WebSocket connection/events sent
+- Resilience
+  - Retry failed/dropped conections with exponential back-off and a better UI state on the front-end
+- Payload Structure
+  - Define a JSON schema and enforce it via utility functions when sending/receiving events, including event types and data payload expected, leveraging Typescript
+- Scalability
+  - Have some laod balancer mechanism for running multiple instances of the WebSocket server
+  - Use Redis (e.g pub/sb) or another mechanism to broadcast messages across nodes, depending on the needs of the application
+- Observability
+  - Track connections and properly log them, including all events, and integrate with some dashboard tool to visualize health
+- Reusable WebSocket Layer
+  - On the back-end, build a new layer for abstracting WebSocket calls to enforce our custom rules instead of calling `ws` directly
+  - On the front-end, build a layer for connecting to the WebSocket server with reusable hooks
